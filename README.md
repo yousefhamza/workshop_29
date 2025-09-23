@@ -1,4 +1,4 @@
-# Loading and Displaying a Large Data Feed
+# Loading and displaying a large data feed
 
 Consume data in the background, and lower memory use by batching imports and preventing duplicate records.
 
@@ -6,7 +6,7 @@ Consume data in the background, and lower memory use by batching imports and pre
 This sample creates an app that shows a list of earthquakes recorded in the United States in the past 30 days by consuming a U. S. Geological Survey (USGS) real-time data feed.
 
 To load the USGS JSON feed, perform either of the following:
-- On iOS, pull to refresh the [`List`](doc://com.apple.documentation/documentation/swiftui/list).
+- On iOS, pull to refresh the [`List`](https://developer.apple.com/documentation/swiftui/list).
 - On both iOS and macOS, press the refresh button (⌘R).
 
 The app will load the requested data on the default delegate queue of [`URLSession`](https://developer.apple.com/documentation/foundation/urlsession), which is an operation queue that runs in the background. After the feed is downloaded and the session data task completes, the app continues working on this queue to import the large number of feed elements to the store without blocking the main queue.
@@ -61,7 +61,7 @@ Because `NSBatchInsertRequest` bypasses the context and doesn’t trigger a [`NS
 
 This sample uses persistent store remote change notifications and persistent history tracking to update the UI, because:
 - The data model contains a single entity, so all changes are relevant to the `List` and do not require parsing specific changes within the history.
-- [`FetchRequest`](doc://com.apple.documentation/documentation/swiftui/fetchrequest) fetches and retrieves results directly from the store, and the `List` refreshes its contents automatically.
+- [`FetchRequest`](https://developer.apple.com/documentation/swiftui/fetchrequest) fetches and retrieves results directly from the store, and the `List` refreshes its contents automatically.
 - SwiftUI is only concerned about the view context, so `QuakesProvider` observes the [`NSPersistentStoreRemoteChange`](https://developer.apple.com/documentation/foundation/nsnotification/name/3180044-nspersistentstoreremotechange) notification to merge changes from the background context, performing the batch operations, into the view context.
 
 Enable remote change notifications for a persistent store by setting the [`NSPersistentStoreRemoteChangeNotificationPostOptionKey`](https://developer.apple.com/documentation/coredata/nspersistentstoreremotechangenotificationpostoptionkey) option on the store description to `true`.
@@ -81,12 +81,10 @@ description.setOption(true as NSNumber,
 Whenever changes occur within a persistent store, including writes by other processes, the store posts a remote change notification. When the sample receives the notification, it fetches the persistent history transactions and changes occurring after a given token. After the persistent history change request retrieves the history, the sample merges each transaction’s [`objectIDNotification`](https://developer.apple.com/documentation/coredata/nspersistenthistorytransaction/2894946-objectidnotification) into the view context via [`mergeChanges(fromContextDidSave:)`](https://developer.apple.com/documentation/coredata/nsmanagedobjectcontext/1506606-mergechanges).
 
 ``` swift
-let changeRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
+let changeRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: lastToken)
 let historyResult = try taskContext.execute(changeRequest) as? NSPersistentHistoryResult
-if let history = historyResult?.result as? [NSPersistentHistoryTransaction],
-   !history.isEmpty {
-    self.mergePersistentHistoryChanges(from: history)
-    return
+if let history = historyResult?.result as? [NSPersistentHistoryTransaction] {
+    return history
 }
 ```
 
@@ -94,10 +92,10 @@ After executing each `NSBatchInsertRequest` or [`NSBatchDeleteRequest`](https://
 
 ``` swift
 let viewContext = container.viewContext
-viewContext.perform {
-    for transaction in history {
+let tokens = await viewContext.perform {
+    history.map { (transaction: NSPersistentHistoryTransaction) -> NSPersistentHistoryToken in
         viewContext.mergeChanges(fromContextDidSave: transaction.objectIDNotification())
-        self.lastToken = transaction.token
+        return transaction.token
     }
 }
 ```

@@ -1,5 +1,5 @@
 /*
-See LICENSE folder for this sample’s licensing information.
+See the LICENSE.txt file for this sample’s licensing information.
 
 Abstract:
 A class to fetch data from the remote server and save it to the Core Data store.
@@ -36,11 +36,11 @@ class QuakesProvider {
 
     private init(inMemory: Bool = false) {
         self.inMemory = inMemory
-
+        
         // Observe Core Data remote change notifications on the queue where the changes were made.
         notificationToken = NotificationCenter.default.addObserver(forName: .NSPersistentStoreRemoteChange, object: nil, queue: nil) { note in
             self.logger.debug("Received a persistent store remote change notification.")
-            async {
+            Task {
                 await self.fetchPersistentHistory()
             }
         }
@@ -52,8 +52,8 @@ class QuakesProvider {
         }
     }
 
-    /// A peristent history token used for fetching transactions from the store.
-    private var lastToken: NSPersistentHistoryToken?
+    /// A peristent history token storage actor used for fetching transactions from the store.
+    private let tokenStorage = TokenStorage()
 
     /// A persistent container to set up the Core Data stack.
     lazy var container: NSPersistentContainer = {
@@ -90,6 +90,8 @@ class QuakesProvider {
         container.viewContext.name = "viewContext"
         /// - Tag: viewContextMergePolicy
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        // Set unused undoManager to nil for macOS (it is nil by default on iOS)
+        // to reduce resource requirements.
         container.viewContext.undoManager = nil
         container.viewContext.shouldDeleteInaccessibleFaults = true
         return container
@@ -216,45 +218,62 @@ class QuakesProvider {
 
     func fetchPersistentHistory() async {
         do {
-            try await fetchPersistentHistoryTransactionsAndChanges()
+            let transactions = try await fetchPersistentHistoryTransactions()
+            if let token = await mergePersistentHistoryChanges(from: transactions) {
+                await tokenStorage.set(token)
+            }
+            logger.debug("Finished merging history changes.")
         } catch {
             logger.debug("\(error.localizedDescription)")
         }
     }
 
-    private func fetchPersistentHistoryTransactionsAndChanges() async throws {
+    private func fetchPersistentHistoryTransactions() async throws -> [NSPersistentHistoryTransaction] {
         let taskContext = newTaskContext()
         taskContext.name = "persistentHistoryContext"
         logger.debug("Start fetching persistent history changes from the store...")
 
-        try await taskContext.perform {
+        let lastToken = await tokenStorage.token
+        let history = try await taskContext.perform { () -> [NSPersistentHistoryTransaction] in
             // Execute the persistent history change since the last transaction.
             /// - Tag: fetchHistory
-            let changeRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
+            let changeRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: lastToken)
             let historyResult = try taskContext.execute(changeRequest) as? NSPersistentHistoryResult
-            if let history = historyResult?.result as? [NSPersistentHistoryTransaction],
-               !history.isEmpty {
-                self.mergePersistentHistoryChanges(from: history)
-                return
+            if let history = historyResult?.result as? [NSPersistentHistoryTransaction] {
+                return history
             }
-
             self.logger.debug("No persistent history transactions found.")
             throw QuakeError.persistentHistoryChangeError
         }
-
-        logger.debug("Finished merging history changes.")
+        return history
     }
 
-    private func mergePersistentHistoryChanges(from history: [NSPersistentHistoryTransaction]) {
+    private func mergePersistentHistoryChanges(from history: [NSPersistentHistoryTransaction]) async -> NSPersistentHistoryToken? {
         self.logger.debug("Received \(history.count) persistent history transactions.")
+        guard !history.isEmpty else { return nil }
+
         // Update view context with objectIDs from history change request.
         /// - Tag: mergeChanges
         let viewContext = container.viewContext
-        viewContext.perform {
-            for transaction in history {
+        let tokens = await viewContext.perform {
+            history.map { (transaction: NSPersistentHistoryTransaction) -> NSPersistentHistoryToken in
                 viewContext.mergeChanges(fromContextDidSave: transaction.objectIDNotification())
-                self.lastToken = transaction.token
+                return transaction.token
             }
+        }
+        return tokens.last
+    }
+
+    // MARK: TokenStorage
+
+    /// An actor responsible for serially storing persistent history tokens for the quake provider.
+    private actor TokenStorage {
+
+        /// A peristent history token used for fetching transactions from the store.
+        private(set) var token: NSPersistentHistoryToken?
+
+        func set(_ token: NSPersistentHistoryToken) {
+            self.token = token
         }
     }
 }

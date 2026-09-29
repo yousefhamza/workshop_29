@@ -11,3 +11,6 @@
 // approach in your own projects—it's only useful for sample code projects because
 // they are frequently downloaded and don't have a development team set.
 SAMPLE_CODE_DISAMBIGUATOR=${DEVELOPMENT_TEAM}
+
+// Local, gitignored secrets (LUCIQ_APP_TOKEN). Optional so a fresh clone still builds.
+#include? "Secrets.xcconfig"

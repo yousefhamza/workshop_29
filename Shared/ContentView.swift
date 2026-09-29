@@ -30,7 +30,7 @@ struct ContentView: View {
         NavigationView {
             List(selection: $selection) {
                 ForEach(quakes, id: \.code) { quake in
-                    NavigationLink(destination: QuakeDetail(quake: quake)) {
+                    NavigationLink(destination: detail(for: quake)) {
                         QuakeRow(quake: quake)
                     }
                 }
@@ -51,6 +51,15 @@ struct ContentView: View {
             EmptyView()
         }
         .alert(isPresented: $hasError, error: error) { }
+    }
+
+    @ViewBuilder
+    private func detail(for quake: Quake) -> some View {
+        #if os(iOS)
+        QuakeDetailView(quake: quake)
+        #else
+        QuakeDetail(quake: quake)
+        #endif
     }
 }
 

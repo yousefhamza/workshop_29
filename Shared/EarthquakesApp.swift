@@ -17,6 +17,9 @@ struct EarthquakesApp: App {
         // LUCIQ_APP_TOKEN is injected into Info.plist from Configuration/Secrets.xcconfig (gitignored).
         if let token = Bundle.main.object(forInfoDictionaryKey: "LuciqAppToken") as? String, !token.isEmpty {
             Luciq.start(withToken: token, invocationEvents: [.shake, .floatingButton])
+            let theme = Theme()
+            theme.primaryColor = .systemRed
+            Luciq.theme = theme
             Surveys.showSurveyIfAvailable()
         } else {
             print("Luciq: LUCIQ_APP_TOKEN is not set in Configuration/Secrets.xcconfig; SDK not started.")

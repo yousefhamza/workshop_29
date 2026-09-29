@@ -7,6 +7,9 @@ The views of the app, which display details of the fetched earthquake data.
 
 import SwiftUI
 import CoreData
+#if os(iOS)
+import LuciqSDK
+#endif
 
 struct ContentView: View {
     var quakesProvider: QuakesProvider = .shared
@@ -21,6 +24,7 @@ struct ContentView: View {
     @State private var editMode: EditMode = .inactive
     @State private var selectMode: SelectMode = .inactive
     @State private var isShowingChaos = false
+    @State private var isShowingLogin = false
     #endif
     @State private var selection: Set<String> = []
     @State private var isLoading = false
@@ -54,6 +58,7 @@ struct ContentView: View {
         .alert(isPresented: $hasError, error: error) { }
         #if os(iOS)
         .sheet(isPresented: $isShowingChaos) { ChaosView() }
+        .sheet(isPresented: $isShowingLogin) { LoginView() }
         #endif
     }
 
@@ -144,7 +149,19 @@ extension ContentView {
             }
         }
 
-        ToolbarItem(placement: .navigationBarTrailing) {
+        ToolbarItemGroup(placement: .navigationBarTrailing) {
+            if editMode == .inactive {
+                Button {
+                    isShowingLogin = true
+                } label: {
+                    Label("Log In", systemImage: "person.crop.circle")
+                }
+                Button {
+                    Surveys.showSurvey(withToken: "RRdPvzCmoNYHPQ9oLFkZww")
+                } label: {
+                    Label("Surveys", systemImage: "questionmark.bubble")
+                }
+            }
             EditButton(editMode: $editMode) {
                 selection.removeAll()
                 editMode = .inactive

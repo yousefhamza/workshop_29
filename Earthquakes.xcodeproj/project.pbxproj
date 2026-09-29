@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		1B1E686159473121FB206F8E /* QuakeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB22CCF5D6E895C752E5C434 /* QuakeDetailViewController.swift */; };
+		3C1A7E2B9D4F60A1B2C3D401 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1A7E2B9D4F60A1B2C3D402 /* LoginView.swift */; };
+		3C1A7E2B9D4F60A1B2C3D403 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1A7E2B9D4F60A1B2C3D404 /* SignupView.swift */; };
+		5FA00F99306BCB4B00F963F9 /* Luciq in Frameworks */ = {isa = PBXBuildFile; productRef = 5FA00F98306BCB4B00F963F9 /* Luciq */; };
 		868ED6C51536A634D72C6086 /* ChaosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02F00F32F91B805391B17C4 /* ChaosView.swift */; };
-		9338372C0694F58B20DC5BF0 /* Luciq in Frameworks */ = {isa = PBXBuildFile; productRef = A947F2A81606325C941FE702 /* Luciq */; };
 		AD2FC4C82654EF0800E135D2 /* EarthquakesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD43F1E526158A640068AABC /* EarthquakesApp.swift */; };
 		AD2FC4CA2654EF7C00E135D2 /* QuakesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD43F1FE26158DAF0068AABC /* QuakesProvider.swift */; };
 		AD2FC4CB2654EF7C00E135D2 /* Quake.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD43F1F826158CD50068AABC /* Quake.swift */; };
@@ -43,6 +45,8 @@
 /* Begin PBXFileReference section */
 		20E8E62C4A6D78D282B06BA8 /* ACKNOWLEDGEMENTS.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = ACKNOWLEDGEMENTS.txt; sourceTree = "<group>"; };
 		26EEA7CAFEEF3C5809214465 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3C1A7E2B9D4F60A1B2C3D402 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		3C1A7E2B9D4F60A1B2C3D404 /* SignupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		54CF5BED3CD9DE525986B01C /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		6EC8C05DC1E92B40CD3EBA87 /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
 		A41DA1861FE08116EE160C48 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,7 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9338372C0694F58B20DC5BF0 /* Luciq in Frameworks */,
+				5FA00F99306BCB4B00F963F9 /* Luciq in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +161,8 @@
 				DB22CCF5D6E895C752E5C434 /* QuakeDetailViewController.swift */,
 				A41DA1861FE08116EE160C48 /* Info.plist */,
 				B02F00F32F91B805391B17C4 /* ChaosView.swift */,
+				3C1A7E2B9D4F60A1B2C3D404 /* SignupView.swift */,
+				3C1A7E2B9D4F60A1B2C3D402 /* LoginView.swift */,
 			);
 			path = "Earthquakes-iOS";
 			sourceTree = "<group>";
@@ -251,7 +257,7 @@
 			);
 			name = "Earthquakes-iOS";
 			packageProductDependencies = (
-				A947F2A81606325C941FE702 /* Luciq */,
+				5FA00F98306BCB4B00F963F9 /* Luciq */,
 			);
 			productName = Earthquakes;
 			productReference = AD43F1E226158A640068AABC /* Earthquakes.app */;
@@ -286,7 +292,7 @@
 			);
 			mainGroup = AD43F1D926158A630068AABC;
 			packageReferences = (
-				D467841538E33D83D9C87AF0 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */,
+				5FA00F97306BCB4A00F963F9 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */,
 			);
 			productRefGroup = AD43F1E326158A640068AABC /* Products */;
 			projectDirPath = "";
@@ -379,6 +385,8 @@
 				AD43F1FA26158CD50068AABC /* Quake.swift in Sources */,
 				1B1E686159473121FB206F8E /* QuakeDetailViewController.swift in Sources */,
 				868ED6C51536A634D72C6086 /* ChaosView.swift in Sources */,
+				3C1A7E2B9D4F60A1B2C3D403 /* SignupView.swift in Sources */,
+				3C1A7E2B9D4F60A1B2C3D401 /* LoginView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,7 +606,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -637,7 +645,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -687,20 +695,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D467841538E33D83D9C87AF0 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */ = {
+		5FA00F97306BCB4A00F963F9 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/luciqai/luciq-ios-sdk";
 			requirement = {
-				kind = exactVersion;
-				version = 19.11.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 19.11.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A947F2A81606325C941FE702 /* Luciq */ = {
+		5FA00F98306BCB4B00F963F9 /* Luciq */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D467841538E33D83D9C87AF0 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */;
+			package = 5FA00F97306BCB4A00F963F9 /* XCRemoteSwiftPackageReference "luciq-ios-sdk" */;
 			productName = Luciq;
 		};
 /* End XCSwiftPackageProductDependency section */

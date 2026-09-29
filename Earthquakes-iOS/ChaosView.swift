@@ -16,7 +16,12 @@ struct ChaosView: View {
 
     var body: some View {
         NavigationView {
-            List {
+            LuciqTracedView(name: "Chaos") { list }
+        }
+    }
+
+    private var list: some View {
+        List {
                 Section {
                     Text(status).font(.footnote).foregroundStyle(.secondary)
                 }
@@ -46,7 +51,6 @@ struct ChaosView: View {
                 }
             }
             .navigationTitle("Chaos")
-        }
     }
 
     // UIAlertController because SwiftUI alerts only take text fields from iOS 16, and the app targets iOS 15.
@@ -135,6 +139,10 @@ private enum MemoryHog {
 
 private struct HeavyList: View {
     var body: some View {
+        LuciqTracedView(name: "Heavy list") { list }
+    }
+
+    private var list: some View {
         List(0..<500, id: \.self) { index in
             HStack {
                 AsyncImage(url: URL(string: "https://dummyjson.com/image/120x120?text=\(index)")) { image in

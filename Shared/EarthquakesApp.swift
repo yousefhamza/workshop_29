@@ -25,8 +25,17 @@ struct EarthquakesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, QuakesProvider.shared.container.viewContext)
+            #if os(iOS)
+            // SwiftUI screens only report screen loading to Luciq APM when wrapped.
+            LuciqTracedView(name: "Earthquakes") { content }
+            #else
+            content
+            #endif
         }
+    }
+
+    private var content: some View {
+        ContentView()
+            .environment(\.managedObjectContext, QuakesProvider.shared.container.viewContext)
     }
 }

@@ -20,10 +20,15 @@ struct ChaosView: View {
                 Section {
                     Text(status).font(.footnote).foregroundStyle(.secondary)
                 }
+                Section("User") {
+                    Button("Identify user", action: presentIdentifyAlert)
+                }
                 Section("Crashes") {
                     Button("Crash") { fatalError("Chaos: deliberate crash") }
                     Button("Handled error", action: reportHandledError)
-                    Button("Freeze (5 s)") { Thread.sleep(forTimeInterval: 5) }
+                    // Luciq's watchdog pings main every 3 s (server-tunable) and needs two missed pings,
+                    // so only blocks longer than ~6.25 s are reliably caught. Ignored while a debugger is attached.
+                    Button("Freeze (10 s)") { Thread.sleep(forTimeInterval: 10) }
                     Button("Memory hog", action: hogMemory)
                 }
                 Section("Network") {
@@ -42,6 +47,36 @@ struct ChaosView: View {
             }
             .navigationTitle("Chaos")
         }
+    }
+
+    // UIAlertController because SwiftUI alerts only take text fields from iOS 16, and the app targets iOS 15.
+    private func presentIdentifyAlert() {
+        let alert = UIAlertController(title: "Identify user", message: nil, preferredStyle: .alert)
+        alert.addTextField {
+            $0.placeholder = "Email"
+            $0.keyboardType = .emailAddress
+            $0.autocapitalizationType = .none
+            $0.autocorrectionType = .no
+        }
+        alert.addTextField { $0.placeholder = "Name" }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Identify", style: .default) { _ in
+            let email = alert.textFields?[0].text?.trimmingCharacters(in: .whitespaces) ?? ""
+            let name = alert.textFields?[1].text?.trimmingCharacters(in: .whitespaces) ?? ""
+            guard !email.isEmpty else {
+                status = "Email is required to identify a user."
+                return
+            }
+            // No separate user ID in this app, so the email doubles as the ID.
+            Luciq.identifyUser(withID: email, email: email, name: name)
+            status = "Identified \(name.isEmpty ? email : "\(name) <\(email)>")"
+        })
+
+        var top = UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .first?.rootViewController
+        while let presented = top?.presentedViewController { top = presented }
+        top?.present(alert, animated: true)
     }
 
     private func reportHandledError() {

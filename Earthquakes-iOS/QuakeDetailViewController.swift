@@ -5,6 +5,7 @@ Abstract:
 The UIKit version of the view which displays details of an earthquake selected from a list.
 */
 
+import LuciqSDK
 import SwiftUI
 import UIKit
 
@@ -70,6 +71,10 @@ final class QuakeDetailViewController: UIViewController {
         let activity = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         // iPad presents this as a popover, which crashes without an anchor.
         activity.popoverPresentationController?.sourceView = source
+        // Survey targeting keys off this event, so log only completed shares.
+        activity.completionWithItemsHandler = { _, completed, _, _ in
+            if completed { Luciq.logUserEvent(withName: "quake_shared") }
+        }
         present(activity, animated: true)
     }
 }

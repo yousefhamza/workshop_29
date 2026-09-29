@@ -43,7 +43,11 @@ final class QuakeDetailViewController: UIViewController {
         timeLabel.text = quake.time.formatted()
         timeLabel.textColor = .secondaryLabel
 
-        let stack = UIStackView(arrangedSubviews: [magnitudeLabel, placeLabel, timeLabel])
+        let shareButton = UIButton(type: .system, primaryAction: UIAction(title: "Share") { [unowned self] _ in
+            share()
+        })
+
+        let stack = UIStackView(arrangedSubviews: [magnitudeLabel, placeLabel, timeLabel, shareButton])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 8
@@ -58,6 +62,12 @@ final class QuakeDetailViewController: UIViewController {
             stack.trailingAnchor.constraint(lessThanOrEqualTo: view.layoutMarginsGuide.trailingAnchor),
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+    }
+
+    private func share() {
+        let magnitude = quake.magnitude.formatted(.number.precision(.fractionLength(1)))
+        let text = "M\(magnitude) earthquake, \(quake.place), \(quake.time.formatted())"
+        present(UIActivityViewController(activityItems: [text], applicationActivities: nil), animated: true)
     }
 }
 

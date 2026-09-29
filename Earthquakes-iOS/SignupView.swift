@@ -7,6 +7,7 @@ There's no backend; it only validates input.
 */
 
 import SwiftUI
+import LuciqSDK
 
 struct SignupView: View {
     @State private var email = ""
@@ -27,23 +28,28 @@ struct SignupView: View {
                     .textContentType(.username)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
+                    .luciq_privateView()
                 SecureField("Password", text: $password)
                     .textContentType(.newPassword)
+                    .luciq_privateView()
                 SecureField("Confirm password", text: $confirmPassword)
                     .textContentType(.newPassword)
+                    .luciq_privateView()
             }
 
             Section("Membership") {
                 TextField("Membership ID", text: $membershipID)
                     .textInputAutocapitalization(.characters)
                     .disableAutocorrection(true)
+                    .luciq_privateView()
             }
 
             Section {
                 Button("Sign Up", action: signUp)
                     .disabled(!isComplete)
             } footer: {
-                if let status { Text(status) }
+                // Status echoes the email and membership ID back, so keep it out of Luciq screenshots too.
+                if let status { Text(status).luciq_privateView() }
             }
         }
         .navigationTitle("Sign Up")

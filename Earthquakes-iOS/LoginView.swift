@@ -6,6 +6,7 @@ A sample login screen with email and password. There's no backend; it only valid
 */
 
 import SwiftUI
+import LuciqSDK
 
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
@@ -23,15 +24,18 @@ struct LoginView: View {
                         .textContentType(.username)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
+                        .luciq_privateView()
                     SecureField("Password", text: $password)
                         .textContentType(.password)
+                        .luciq_privateView()
                 }
 
                 Section {
                     Button("Log In", action: logIn)
                         .disabled(email.isEmpty || password.isEmpty)
                 } footer: {
-                    if let status { Text(status) }
+                    // Status echoes the email back, so keep it out of Luciq screenshots too.
+                    if let status { Text(status).luciq_privateView() }
                 }
 
                 Section {

@@ -43,8 +43,8 @@ final class QuakeDetailViewController: UIViewController {
         timeLabel.text = quake.time.formatted()
         timeLabel.textColor = .secondaryLabel
 
-        let shareButton = UIButton(type: .system, primaryAction: UIAction(title: "Share") { [unowned self] _ in
-            share()
+        let shareButton = UIButton(type: .system, primaryAction: UIAction(title: "Share") { [unowned self] action in
+            share(from: action.sender as? UIView ?? view)
         })
 
         let stack = UIStackView(arrangedSubviews: [magnitudeLabel, placeLabel, timeLabel, shareButton])
@@ -64,10 +64,13 @@ final class QuakeDetailViewController: UIViewController {
         ])
     }
 
-    private func share() {
+    private func share(from source: UIView) {
         let magnitude = quake.magnitude.formatted(.number.precision(.fractionLength(1)))
         let text = "M\(magnitude) earthquake, \(quake.place), \(quake.time.formatted())"
-        present(UIActivityViewController(activityItems: [text], applicationActivities: nil), animated: true)
+        let activity = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        // iPad presents this as a popover, which crashes without an anchor.
+        activity.popoverPresentationController?.sourceView = source
+        present(activity, animated: true)
     }
 }
 

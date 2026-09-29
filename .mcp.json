@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "luciq": {
+      "type": "http",
+      "url": "https://api.luciq.ai/api/mcp"
+    },
+    "launchdarkly": {
+      "type": "http",
+      "url": "https://mcp.launchdarkly.com/mcp/launchdarkly"
+    }
+  }
+}

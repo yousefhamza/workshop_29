@@ -22,3 +22,6 @@ xcuserdata/
 
 # Local secrets
 Configuration/Secrets.xcconfig
+
+# Claude Code
+.claude/

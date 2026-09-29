@@ -20,6 +20,7 @@ struct ContentView: View {
     #if os(iOS)
     @State private var editMode: EditMode = .inactive
     @State private var selectMode: SelectMode = .inactive
+    @State private var isShowingChaos = false
     #endif
     @State private var selection: Set<String> = []
     @State private var isLoading = false
@@ -51,6 +52,9 @@ struct ContentView: View {
             EmptyView()
         }
         .alert(isPresented: $hasError, error: error) { }
+        #if os(iOS)
+        .sheet(isPresented: $isShowingChaos) { ChaosView() }
+        #endif
     }
 
     @ViewBuilder
@@ -135,6 +139,8 @@ extension ContentView {
                         selection = []
                     }
                 }
+            } else {
+                Button("Chaos") { isShowingChaos = true }
             }
         }
 
